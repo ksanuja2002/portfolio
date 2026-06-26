@@ -8,7 +8,7 @@ A personal portfolio for **Anuja**, a Product & UX Designer with 1.8 years of ex
 
 ## ✨ Live Preview
 
-**[→ View Portfolio](https://ksanuja2002.github.io/portfolio)**
+**[→ View Portfolio](https://portfolio-sable-tau-19.vercel.app)** &nbsp; ![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?logo=vercel)
 
 ---
 
@@ -115,8 +115,9 @@ npx serve .
 
 ## 📬 Contact
 
-- **Email** — [anuja@gmail.com](mailto:anuja@gmail.com)
-- **LinkedIn** — [linkedin.com/in/ksanuja2002](https://linkedin.com/in/ksanuja2002)
+- **Portfolio** — [portfolio-sable-tau-19.vercel.app](https://portfolio-sable-tau-19.vercel.app)
+- **Email** — [ksanuja2002@gmail.com](mailto:ksanuja2002@gmail.com)
+- **LinkedIn** — *(share your LinkedIn URL and I'll add it!)*
 - **Behance** — [behance.net](https://behance.net)
 
 ---

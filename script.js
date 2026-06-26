@@ -622,3 +622,266 @@ startSlideshow('hero-slideshow-3', 2000, 500);
   animateBg();
 })();
 
+// ═══════════════════════════════════════════════════
+//  PLAYGROUND — Interactive Drawing Pad
+// ═══════════════════════════════════════════════════
+(function () {
+  const canvas = document.getElementById('drawing-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+
+  // ── State ──
+  let tool    = 'pen';
+  let color   = '#1a1a1a';
+  let size    = 5;
+  let drawing = false;
+  let pts     = [];          // point buffer for smooth curves
+
+  // ── Undo / Redo stacks (ImageData snapshots) ──
+  const undoStack = [];
+  const redoStack = [];
+  const MAX_UNDO  = 30;
+
+  // ── Init canvas pixel size ──
+  function initCanvas() {
+    const rect = canvas.getBoundingClientRect();
+    canvas.width  = rect.width  * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.scale(dpr, dpr);
+  }
+
+  // ── Helpers ──
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const src = e.touches ? e.touches[0] : e;
+    return { x: src.clientX - r.left, y: src.clientY - r.top };
+  }
+
+  function saveSnapshot() {
+    undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    if (undoStack.length > MAX_UNDO) undoStack.shift();
+    redoStack.length = 0;
+    syncButtons();
+  }
+
+  function syncButtons() {
+    document.getElementById('pg-undo').disabled = undoStack.length === 0;
+    document.getElementById('pg-redo').disabled = redoStack.length === 0;
+  }
+
+  function hexRgba(hex, a) {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`;
+  }
+
+  function applyStyle() {
+    ctx.lineCap    = 'round';
+    ctx.lineJoin   = 'round';
+    if (tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.strokeStyle = 'rgba(0,0,0,1)';
+      ctx.lineWidth   = size * 4;
+    } else if (tool === 'marker') {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = hexRgba(color, 0.38);
+      ctx.lineWidth   = size * 3;
+    } else {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.strokeStyle = color;
+      ctx.lineWidth   = size;
+    }
+  }
+
+  // ── Draw loop ──
+  function startDraw(e) {
+    e.preventDefault();
+    saveSnapshot();
+    drawing = true;
+    pts     = [getPos(e)];
+    applyStyle();
+    // Paint a dot for single clicks
+    const p = pts[0];
+    ctx.beginPath();
+    if (tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.arc(p.x, p.y, ctx.lineWidth / 2, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,0,0,1)';
+    } else {
+      ctx.arc(p.x, p.y, ctx.lineWidth / 2, 0, Math.PI * 2);
+      ctx.fillStyle = ctx.strokeStyle;
+    }
+    ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  function doDraw(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    pts.push(getPos(e));
+    applyStyle();
+
+    if (pts.length < 3) {
+      // Straight segment until we have enough points
+      const [a, b] = pts;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.stroke();
+    } else {
+      // Quadratic Bézier through midpoints for silky smoothness
+      const n  = pts.length;
+      const p0 = pts[n - 3];
+      const p1 = pts[n - 2];
+      const p2 = pts[n - 1];
+      const m1 = { x: (p0.x + p1.x) / 2, y: (p0.y + p1.y) / 2 };
+      const m2 = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 };
+      ctx.beginPath();
+      ctx.moveTo(m1.x, m1.y);
+      ctx.quadraticCurveTo(p1.x, p1.y, m2.x, m2.y);
+      ctx.stroke();
+    }
+  }
+
+  function stopDraw() {
+    if (!drawing) return;
+    drawing = false;
+    ctx.globalCompositeOperation = 'source-over';
+    autoSave();
+  }
+
+  // ── Auto-save to localStorage ──
+  function autoSave() {
+    try {
+      localStorage.setItem('anuja-pg-v1', canvas.toDataURL('image/webp', 0.85));
+      const lbl = document.getElementById('pg-autosave-label');
+      if (!lbl) return;
+      lbl.textContent = '✦ Saved!';
+      lbl.classList.add('saved');
+      clearTimeout(lbl._t);
+      lbl._t = setTimeout(() => {
+        lbl.textContent = '✦ Autosaves';
+        lbl.classList.remove('saved');
+      }, 1600);
+    } catch (_) {}
+  }
+
+  function loadSaved() {
+    try {
+      const data = localStorage.getItem('anuja-pg-v1');
+      if (!data) return;
+      const img = new Image();
+      img.onload = () => {
+        const w = canvas.width  / dpr;
+        const h = canvas.height / dpr;
+        ctx.drawImage(img, 0, 0, w, h);
+      };
+      img.src = data;
+    } catch (_) {}
+  }
+
+  // ── Canvas events ──
+  canvas.addEventListener('mousedown',  startDraw);
+  canvas.addEventListener('mousemove',  doDraw);
+  canvas.addEventListener('mouseup',    stopDraw);
+  canvas.addEventListener('mouseleave', stopDraw);
+  canvas.addEventListener('touchstart', startDraw, { passive: false });
+  canvas.addEventListener('touchmove',  doDraw,    { passive: false });
+  canvas.addEventListener('touchend',   stopDraw);
+
+  // ── Tool selection ──
+  document.querySelectorAll('.pg-tool').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pg-tool').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      tool = btn.id.replace('pg-', '');   // 'pen' | 'marker' | 'eraser'
+      canvas.style.cursor = tool === 'eraser' ? 'cell' : 'crosshair';
+    });
+  });
+
+  // ── Brush size ──
+  document.querySelectorAll('.pg-size').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pg-size').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      size = parseInt(btn.dataset.size);
+    });
+  });
+
+  // ── Color swatches ──
+  document.querySelectorAll('.pg-color:not(.pg-rainbow)').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pg-color').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      color = btn.dataset.color;
+      // Switch back to pen if eraser was active
+      if (tool === 'eraser') {
+        tool = 'pen';
+        document.querySelectorAll('.pg-tool').forEach(b => b.classList.remove('active'));
+        document.getElementById('pg-pen').classList.add('active');
+        canvas.style.cursor = 'crosshair';
+      }
+    });
+  });
+
+  // ── Custom color picker ──
+  document.getElementById('pg-custom-color').addEventListener('input', e => {
+    color = e.target.value;
+    document.querySelectorAll('.pg-color').forEach(b => b.classList.remove('active'));
+    document.querySelector('.pg-rainbow').classList.add('active');
+    if (tool === 'eraser') {
+      tool = 'pen';
+      document.querySelectorAll('.pg-tool').forEach(b => b.classList.remove('active'));
+      document.getElementById('pg-pen').classList.add('active');
+      canvas.style.cursor = 'crosshair';
+    }
+  });
+
+  // ── Undo ──
+  document.getElementById('pg-undo').addEventListener('click', () => {
+    if (!undoStack.length) return;
+    redoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    ctx.putImageData(undoStack.pop(), 0, 0);
+    syncButtons();
+    autoSave();
+  });
+
+  // ── Redo ──
+  document.getElementById('pg-redo').addEventListener('click', () => {
+    if (!redoStack.length) return;
+    undoStack.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+    ctx.putImageData(redoStack.pop(), 0, 0);
+    syncButtons();
+    autoSave();
+  });
+
+  // ── Clear ──
+  document.getElementById('pg-clear').addEventListener('click', () => {
+    saveSnapshot();
+    ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+    autoSave();
+  });
+
+  // ── Download (with white background) ──
+  document.getElementById('pg-download').addEventListener('click', () => {
+    const tmp    = document.createElement('canvas');
+    tmp.width    = canvas.width;
+    tmp.height   = canvas.height;
+    const tctx   = tmp.getContext('2d');
+    tctx.fillStyle = '#ffffff';
+    tctx.fillRect(0, 0, tmp.width, tmp.height);
+    tctx.drawImage(canvas, 0, 0);
+    const a = document.createElement('a');
+    a.href     = tmp.toDataURL('image/png');
+    a.download = 'anuja-playground.png';
+    a.click();
+  });
+
+  // ── Bootstrap ──
+  window.addEventListener('DOMContentLoaded', () => {
+    initCanvas();
+    loadSaved();
+    syncButtons();
+  });
+
+})();

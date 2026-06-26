@@ -1440,7 +1440,21 @@ body > * {
   /* Hide the inline photo chips on phone — they cause overflow */
   .inline-img-sm,
   .inline-img-md {
-    display: none;
+    width: 36px;
+    height: 28px;
+    border-radius: 6px;
+    vertical-align: middle;
+    display: inline-block;
+    object-fit: cover;
+  }
+  .inline-img-md {
+    width: 44px;
+    height: 34px;
+  }
+  .slide-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .smiley { font-size: 0.85em; }
 

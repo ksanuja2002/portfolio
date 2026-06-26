@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anuja — Product Designer</title>
+  <meta name="description"
+    content="Anuja is a Product Designer crafting thoughtful design solutions and visual stories. Fresh off a Product Design internship at Lenskart." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Inter:wght@300;400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- ANIMATED BACKGROUND -->
+  <canvas id="bg-canvas" aria-hidden="true"></canvas>
+  <div class="bg-blob bg-blob-1" aria-hidden="true"></div>
+  <div class="bg-blob bg-blob-2" aria-hidden="true"></div>
+  <div class="bg-blob bg-blob-3" aria-hidden="true"></div>
+  <div class="bg-blob bg-blob-4" aria-hidden="true"></div>
+
+  <!-- CURSOR EFFECTS LAYERS -->
+  <div id="cursor-grid-light"></div>
+  <div id="cursor-spotlight"></div>
+  <canvas id="trail-canvas"></canvas>
+
+  <!-- TWO GOOGLY EYE CURSOR -->
+  <div id="eye-cursor" aria-hidden="true">
+    <div class="eye-ball" id="eye-left">
+      <div class="eye-iris" id="iris-left">
+        <div class="eye-pupil"></div>
+        <div class="eye-shine"></div>
+      </div>
+    </div>
+    <div class="eye-ball" id="eye-right">
+      <div class="eye-iris" id="iris-right">
+        <div class="eye-pupil"></div>
+        <div class="eye-shine"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- dot kept for click sparks -->
+  <div class="cursor-dot" id="cursor-dot"></div>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="#" class="nav-logo">Anuja</a>
+    <div class="nav-links">
+      <a href="#work" class="nav-link" id="nav-work">Work</a>
+      <a href="#about" class="nav-link" id="nav-about">About</a>
+      <a href="#contact" class="nav-link" id="nav-contact">Contact</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-inner">
+
+      <!-- Previously Designing at Lenskart -->
+      <div class="hero-tagline">
+        <span class="hero-tagline-text">Previously Designing at</span>
+        <span class="lenskart-logo">
+          <!--
+            Lenskart glasses icon – accurate recreation.
+            TWO separate evenodd ring paths layered to produce the ∞ crossing bridge:
+              • Right ring drawn FIRST (behind)
+              • Left ring drawn SECOND (on top)
+            Where the left frame's outer circle extends into the right lens opening → left rim
+            is visible IN the right lens area. The right rim shows in the left lens area
+            through the left frame's transparent inner hole. This creates the weaving cross.
+            Centers: cx_left=55, cx_right=115, distance=60, r_outer=43, r_mid=33.
+            Mid-circle overlap zone (x=82–88) creates the small visual gap between crossing arcs.
+          -->
+          <svg class="lenskart-icon" viewBox="2 0 181 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <!-- Clip to the inner-lens transparent area for detail strokes -->
+              <clipPath id="lkL">
+                <circle cx="55" cy="44" r="33" />
+              </clipPath>
+              <clipPath id="lkR">
+                <circle cx="115" cy="44" r="33" />
+              </clipPath>
+            </defs>
+
+            <!-- Left hinge tab (small rectangular notch at outer edge of left frame) -->
+            <rect x="4" y="37" width="9" height="14" rx="2" fill="#12123a" />
+            <!-- Left temple arm (short, curves slightly upward) -->
+            <path d="M4 44 Q2 44 2 40 L2 35" stroke="#12123a" stroke-width="3.5" stroke-linecap="round" fill="none" />
+
+            <!-- ── RIGHT frame ring (drawn BEHIND left) ── -->
+            <!-- evenodd: outer CW + inner CW → ring between the two circles is filled -->
+            <path fill="#12123a" fill-rule="evenodd" d="
+              M158,44 A43,43 0 0,1 115,87 A43,43 0 0,1 72,44 A43,43 0 0,1 115,1 A43,43 0 0,1 158,44 Z
+              M148,44 A33,33 0 0,1 115,77 A33,33 0 0,1 82,44 A33,33 0 0,1 115,11 A33,33 0 0,1 148,44 Z
+            " />
+
+            <!-- ── LEFT frame ring (drawn IN FRONT of right) ── -->
+            <!-- Left outer arc extends into right lens area → appears over right lens opening -->
+            <path fill="#12123a" fill-rule="evenodd" d="
+              M98,44 A43,43 0 0,1 55,87 A43,43 0 0,1 12,44 A43,43 0 0,1 55,1 A43,43 0 0,1 98,44 Z
+              M88,44 A33,33 0 0,1 55,77 A33,33 0 0,1 22,44 A33,33 0 0,1 55,11 A33,33 0 0,1 88,44 Z
+            " />
+
+            <!-- Inner concentric rings (visible inside each transparent lens opening) -->
+            <circle cx="55" cy="44" r="21" stroke="#12123a" stroke-width="2.5" fill="none" clip-path="url(#lkL)" />
+            <circle cx="115" cy="44" r="21" stroke="#12123a" stroke-width="2.5" fill="none" clip-path="url(#lkR)" />
+
+            <!-- Curved goggle-depth arcs (two per lens, sweeping the upper interior) -->
+            <path d="M33,31 Q55,20 77,31" stroke="#12123a" stroke-width="2.5" stroke-linecap="round" fill="none"
+              clip-path="url(#lkL)" />
+            <path d="M29,38 Q55,28 81,38" stroke="#12123a" stroke-width="2" stroke-linecap="round" fill="none"
+              clip-path="url(#lkL)" />
+            <path d="M93,31 Q115,20 137,31" stroke="#12123a" stroke-width="2.5" stroke-linecap="round" fill="none"
+              clip-path="url(#lkR)" />
+            <path d="M89,38 Q115,28 141,38" stroke="#12123a" stroke-width="2" stroke-linecap="round" fill="none"
+              clip-path="url(#lkR)" />
+
+            <!-- Right hinge tab -->
+            <rect x="158" y="37" width="9" height="14" rx="2" fill="#12123a" />
+            <!-- Right temple arm -->
+            <path d="M167 44 Q171 44 172 40 L172 35" stroke="#12123a" stroke-width="3.5" stroke-linecap="round"
+              fill="none" />
+          </svg>
+          <span class="lenskart-wordmark">lenskart</span>
+        </span>
+      </div>
+
+      <h1 class="hero-headline">
+        <span class="hero-line">
+          Product<span class="inline-slideshow inline-img-sm" id="hero-slideshow">
+            <img src="anuja-gym.jpg" alt="Anuja at gym" class="slide-img slide-active" />
+            <img src="anuja-food.jpg" alt="Food spread" class="slide-img" />
+            <img src="anuja-bowl.jpg" alt="Healthy bowl" class="slide-img" />
+          </span>Designer<span class="smiley smiley-outline">&#9786;</span>
+        </span>
+        <span class="hero-line">
+          <span class="italic">crafting</span>&nbsp;design solutions<span class="inline-slideshow inline-img-md"
+            id="hero-slideshow-2">
+            <img src="anuja-uno.jpg" alt="UNO cards" class="slide-img slide-active" />
+            <img src="anuja-selfie.jpg" alt="Anuja selfie" class="slide-img" />
+            <img src="anuja-sky.jpg" alt="Sky from plane" class="slide-img" />
+          </span>
+        </span>
+        <span class="hero-line">
+          and
+          <span class="inline-slideshow inline-img-sm" id="hero-slideshow-3">
+            <img src="anuja-matcha.jpg" alt="Matcha drinks" class="slide-img slide-active" />
+            <img src="anuja-pancakes.jpg" alt="Pancakes" class="slide-img" />
+            <img src="anuja-notes.jpg" alt="Design notes" class="slide-img" />
+          </span>
+          <span class="italic">visual stories</span>
+          <span class="smiley smiley-outline">&#9786;</span>
+        </span>
+      </h1>
+    </div>
+  </section>
+
+
+
+  <!-- WORK -->
+  <section class="work-section" id="work">
+    <h2 class="section-label">Selected Work</h2>
+
+    <div class="project-card-grid">
+
+      <!-- Card 1: Lenskart -->
+      <article class="project-card" id="project-lenskart">
+        <div class="project-card-image project-card-image--contain" style="height:auto !important; overflow:visible !important; min-height:0 !important;">
+          <img src="project_lenskart_new.jpg" alt="Lenskart Try Before You Buy Experience" style="width:100% !important; height:auto !important; display:block !important; object-fit:unset !important;" />
+          <span class="project-card-tag">Product Design · UX Research</span>
+        </div>
+        <div class="project-card-body">
+          <h3 class="project-card-title">Lenskart's Try Before You Buy Experience</h3>
+          <p class="project-card-desc">Redesigning Lenskart's Home Try-On Service to Create a Seamless and Convenient Eyewear Shopping Experience</p>
+          <a href="#" class="project-card-link">See the project <span>→</span></a>
+        </div>
+      </article>
+
+      <!-- Card 2: Post-Death -->
+      <article class="project-card" id="project-postdeath">
+        <div class="project-card-image project-card-image--contain" style="height:auto !important; overflow:visible !important; min-height:0 !important;">
+          <img src="project_postdeath_new.png" alt="Redesigning Post-Death Document Management" style="width:100% !important; height:auto !important; display:block !important; object-fit:unset !important;" />
+          <span class="project-card-tag">UX Design · Service Design</span>
+        </div>
+        <div class="project-card-body">
+          <h3 class="project-card-title">Redesigning Post-Death Documentation Management</h3>
+          <p class="project-card-desc">A Service Design Project Focused on Simplifying Post-Death Documentation and Legal Processes for Families</p>
+          <a href="#" class="project-card-link">See the project <span>→</span></a>
+        </div>
+      </article>
+
+      <!-- Card 3: Sunstar -->
+      <article class="project-card" id="project-sunstar">
+        <div class="project-card-image" style="height:auto !important; overflow:visible !important;">
+          <img src="project_sunstar_new.png" alt="Sunstar Hospitality Website Redesign" style="width:100% !important; height:auto !important; display:block !important; object-fit:unset !important;" />
+          <span class="project-card-tag">Product Design · Mobile App</span>
+        </div>
+        <div class="project-card-body">
+          <h3 class="project-card-title">Revamping Bookeve's Beauty Appointment Experience</h3>
+          <p class="project-card-desc">Redesigning the Mobile Platform to Simplify Discovery, Booking, and Business Management for Beauty Professionals</p>
+          <a href="#" class="project-card-link">See the project <span>→</span></a>
+        </div>
+      </article>
+
+      <!-- Card 4: Zerenyth -->
+      <article class="project-card" id="project-zerenyth">
+        <div class="project-card-image" style="height:auto !important; overflow:visible !important;">
+          <img src="project_zerenyth_new.png" alt="Zerenyth Technology IoT Dashboard" style="width:100% !important; height:auto !important; display:block !important; object-fit:unset !important;" />
+          <span class="project-card-tag">UX Design · Transportation</span>
+        </div>
+        <div class="project-card-body">
+          <h3 class="project-card-title">Improving Rapido's Rainy-Day Commute Experience</h3>
+          <p class="project-card-desc">Addressing User Pain Points During Rainfall Through a More Reliable and Weather-Aware Ride Journey</p>
+          <a href="#" class="project-card-link">See the project <span>→</span></a>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about-section" id="about">
+    <!-- INTRO STRIP (moved here) -->
+    <div class="intro-strip">
+      <p class="intro-text">Hi! I'm Anuja — a designer, curious soul, and currently in my in-between era. These days I'm
+        swapping coffee for matcha, showing up for workouts, and turning curiosity about people into thoughtful design.
+      </p>
+      <div class="intro-ctas">
+        <a href="#" class="btn-pill" id="btn-resume">Resume</a>
+        <a href="https://linkedin.com" target="_blank" class="btn-pill" id="btn-linkedin">LinkedIn</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section class="experience-section" id="experience">
+    <h2 class="section-title-large">Experience <span class="exp-years">(1.8 yrs)</span></h2>
+
+    <div class="exp-list">
+      <div class="exp-item" id="exp-lenskart">
+        <div class="exp-role">Product Design internship</div>
+        <div class="exp-company-wrap">
+          <span class="exp-company">Lenskart Solution</span>
+          <span class="exp-date">Nov 2025 – May 2026</span>
+        </div>
+      </div>
+      <div class="exp-item" id="exp-zerenyth">
+        <div class="exp-role">UI/UX Designer (Internship)</div>
+        <div class="exp-company-wrap">
+          <span class="exp-company">Zerenyth Technology</span>
+          <span class="exp-date">July 2025 – Sep 2025</span>
+        </div>
+      </div>
+      <div class="exp-item" id="exp-abmedia">
+        <div class="exp-role">UI/UX &amp; Visual Designer (Summer Internship)</div>
+        <div class="exp-company-wrap">
+          <span class="exp-company">Ab Media Co</span>
+          <span class="exp-date">May 2025 – July 2025</span>
+        </div>
+      </div>
+      <div class="exp-item" id="exp-routine">
+        <div class="exp-role">UI/UX Designer (Internship)</div>
+        <div class="exp-company-wrap">
+          <span class="exp-company">Routine Regime Pvt Ltd</span>
+          <span class="exp-date">Feb 2025 – April 2025</span>
+        </div>
+      </div>
+      <div class="exp-item" id="exp-wofo">
+        <div class="exp-role">Product Designer (Internship)</div>
+        <div class="exp-company-wrap">
+          <span class="exp-company">Wofo 24 Technology</span>
+          <span class="exp-date">July 2024 – Jan 2025</span>
+        </div>
+      </div>
+      <div class="exp-item" id="exp-ignite">
+        <div class="exp-role">UI/UX Designer (Summer Internship)</div>
+        <div class="exp-company-wrap">
+          <span class="exp-company">Ignite India Education</span>
+          <span class="exp-date">Jun 2024 – July 2024</span>
+        </div>
+      </div>
+      <div class="exp-item" id="exp-eve">
+        <div class="exp-role">UI/UX Designer (Internship)</div>
+        <div class="exp-company-wrap">
+          <span class="exp-company">EVE Healthcare Pvt Ltd</span>
+          <span class="exp-date">Oct 2023 – Dec 2023</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services-section" id="services">
+    <h2 class="section-title-large">What I do</h2>
+    <div class="services-list">
+      <div class="service-item" id="service-product">
+        <div class="service-left">
+          <span class="service-name">Product Design</span>
+          <span class="service-num">01</span>
+        </div>
+        <p class="service-desc">End-to-end product thinking — from user research and wireframes to polished high-fidelity interfaces that solve real problems.</p>
+        <span class="service-arrow">→</span>
+      </div>
+      <div class="service-item" id="service-ux">
+        <div class="service-left">
+          <span class="service-name">UX Research</span>
+          <span class="service-num">02</span>
+        </div>
+        <p class="service-desc">Turning curiosity about people into actionable insights — interviews, usability tests, and data synthesis that drive better decisions.</p>
+        <span class="service-arrow">→</span>
+      </div>
+      <div class="service-item" id="service-web">
+        <div class="service-left">
+          <span class="service-name">Website Design</span>
+          <span class="service-num">03</span>
+        </div>
+        <p class="service-desc">Designing clear, intuitive websites that balance visual appeal with usability, strong typography, and purposeful structure.</p>
+        <span class="service-arrow">→</span>
+      </div>
+      <div class="service-item" id="service-visual">
+        <div class="service-left">
+          <span class="service-name">Visual Design</span>
+          <span class="service-num">04</span>
+        </div>
+        <p class="service-desc">Crafting cohesive visual identities, illustrations, and brand assets that communicate personality and intent at a glance.</p>
+        <span class="service-arrow">→</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact-section" id="contact">
+    <div class="contact-inner">
+      <div class="contact-text">
+        <h2 class="contact-headline">Let's talk and discuss how I can help your next project come to life.</h2>
+        <a href="mailto:anuja@gmail.com" class="btn-outline" id="btn-dropleine">Drop a line</a>
+      </div>
+      <div class="contact-img">
+        <img src="anuja_photo.png" alt="Anuja" />
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer" id="footer">
+    <div class="footer-inner">
+      <div class="footer-email-col">
+        <span class="footer-label">Email me</span>
+        <a href="mailto:anuja@gmail.com" class="footer-email" id="footer-email">anuja@gmail.com</a>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <span class="footer-col-title">Website</span>
+          <a href="#work" id="footer-work">Work</a>
+          <a href="#about" id="footer-about">About</a>
+          <a href="#contact" id="footer-contact">Contact</a>
+        </div>
+        <div class="footer-col">
+          <span class="footer-col-title">Social</span>
+          <a href="https://linkedin.com" target="_blank" id="footer-linkedin">LinkedIn</a>
+          <a href="https://behance.net" target="_blank" id="footer-behance">Behance</a>
+          <a href="https://instagram.com" target="_blank" id="footer-instagram">Instagram</a>
+        </div>
+        <div class="footer-col">
+          <span class="footer-col-title">More</span>
+          <a href="#" id="footer-resume">Resume</a>
+          <a href="#" id="footer-photography">Photography</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Anuja. Designed with intention.</span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

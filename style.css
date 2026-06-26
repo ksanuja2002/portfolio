@@ -554,12 +554,12 @@ body > * {
 /* ─────────── SECTION HEADINGS ─────────── */
 .section-label {
   font-family: var(--font-sans);
-  font-size: 0.95rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--red);
-  letter-spacing: 0.22em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  margin-bottom: 48px;
+  margin-bottom: 20px;
   display: flex;
   align-items: center;
   gap: 10px;

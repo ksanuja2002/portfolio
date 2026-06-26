@@ -24,6 +24,8 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;  /* prevent any element from causing horizontal scroll */
+  max-width: 100%;
 }
 
 body {
@@ -31,6 +33,7 @@ body {
   background-color: var(--cream);
   color: var(--text-dark);
   overflow-x: hidden;
+  max-width: 100%;
 }
 
 /* ── GRID PAPER BACKGROUND ── */
@@ -1408,31 +1411,37 @@ body > * {
 
   /* ── Hero ── */
   .hero {
-    padding: 100px 20px 48px;
+    padding: 96px 20px 48px;
   }
   .hero-inner {
-    gap: 24px;
+    gap: 20px;
   }
   .hero-tagline {
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     padding: 6px 14px;
     gap: 8px;
+    max-width: calc(100vw - 40px);
+    flex-wrap: wrap;
   }
-  .lenskart-icon { width: 48px; height: auto; }
+  .lenskart-icon { width: 40px; height: auto; }
+  /* Tighter font so text never overflows phone width */
   .hero-headline {
-    font-size: clamp(2.2rem, 10vw, 3.8rem);
-    line-height: 1.18;
+    font-size: clamp(1.9rem, 8.5vw, 3rem);
+    line-height: 1.2;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
   }
-  .hero-line { display: block; }
+  .hero-line {
+    display: block;
+    max-width: 100%;
+  }
+  /* Hide the inline photo chips on phone — they cause overflow */
   .inline-img-sm,
   .inline-img-md {
-    width: 48px;
-    height: 38px;
-    border-radius: 8px;
-    vertical-align: middle;
-    display: inline-block;
+    display: none;
   }
-  .inline-img-md { width: 64px; height: 48px; }
+  .smiley { font-size: 0.85em; }
 
   /* ── Work section ── */
   .work-section {

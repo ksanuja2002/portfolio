@@ -117,7 +117,7 @@ npx serve .
 
 - **Portfolio** — [portfolio-sable-tau-19.vercel.app](https://portfolio-sable-tau-19.vercel.app)
 - **Email** — [ksanuja2002@gmail.com](mailto:ksanuja2002@gmail.com)
-- **LinkedIn** — *(share your LinkedIn URL and I'll add it!)*
+- **LinkedIn** — [linkedin.com/in/ksanuja2002](https://linkedin.com/in/ksanuja2002)
 - **Behance** — [behance.net](https://behance.net)
 
 ---
